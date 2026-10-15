@@ -62,6 +62,9 @@ input[type=range]{flex:1;accent-color:var(--rose)}
 .links a:active{background:rgba(255,255,255,.1)}
 .fallback{margin-top:28px}
 footer{margin-top:34px;color:var(--muted);font-size:.78rem}
+.bats{display:flex;gap:10px;margin-top:22px}
+.bats[hidden]{display:none}
+.bats button{flex:1;padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:var(--text);font:500 .85rem var(--sans);cursor:pointer}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -101,6 +104,11 @@ footer{margin-top:34px;color:var(--muted);font-size:.78rem}
     <div data-type="newStreamPlayer" data-publicToken="76094168-3ea0-4082-ac5c-e2696aeb7a2f" data-theme="dark" data-color="e81e4d" data-channelId="" data-rendered="false" class="cstrEmbed"><a href="https://www.caster.fm">Shoutcast Hosting</a> <a href="https://www.caster.fm">Stream Hosting</a> <a href="https://www.caster.fm">Radio Server Hosting</a></div>
   </div>
 
+  <div class="bats" id="bats" hidden>
+    <button id="batBtn">Ahorro de batería</button>
+    <button id="autoBtn">Inicio automático</button>
+  </div>
+
   <footer>© Luis Dornellez · Tu noche de esperanza</footer>
 </main>
 
@@ -121,6 +129,25 @@ const audio = $("audio"), btn = $("play"), status = $("status");
 const cap = window.Capacitor;
 const native = !!(cap && cap.isNativePlatform && cap.isNativePlatform());
 const Radio = native ? cap.registerPlugin("Radio") : null;   // reproductor nativo (ExoPlayer)
+const Battery = native ? cap.registerPlugin("Battery") : null; // ajustes de batería
+
+/* ---- Botones de batería (solo dentro de la app instalada) ---- */
+if (Battery) {
+  $("bats").hidden = false;
+  $("batBtn").addEventListener("click", async () => {
+    try {
+      const r = await Battery.status();
+      if (r.unrestricted) { status.textContent = "Batería: sin restricciones ✓"; }
+      else { Battery.request(); }
+    } catch (e) { Battery.openSettings(); }
+  });
+  $("autoBtn").addEventListener("click", async () => {
+    try {
+      const r = await Battery.openAutostart();
+      if (!r.opened) Battery.openSettings();
+    } catch (e) { Battery.openSettings(); }
+  });
+}
 
 /* ---- Sin STREAM_URL: se usa el widget original de Caster.fm ---- */
 if (!STREAM_URL) {
@@ -298,6 +325,6 @@ else {
 </body>
   <script>
 window.onerror=function(m,s,l){var d=document.createElement('div');d.style.cssText='position:fixed;left:0;right:0;bottom:0;background:#b00020;color:#fff;font:13px monospace;padding:8px;z-index:9999';d.textContent='Error JS: '+m+' (línea '+l+')';document.body.appendChild(d);};
-window.addEventListener('DOMContentLoaded',function(){var v=document.createElement('div');v.style.cssText='position:fixed;top:2px;right:6px;font:10px monospace;color:#888;z-index:9999';v.textContent='v4';document.body.appendChild(v);});
+window.addEventListener('DOMContentLoaded',function(){var v=document.createElement('div');v.style.cssText='position:fixed;top:2px;right:6px;font:10px monospace;color:#888;z-index:9999';v.textContent='v5';document.body.appendChild(v);});
   </script>
 </html>
