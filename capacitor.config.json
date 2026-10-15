@@ -1,0 +1,7 @@
+{
+  "appId": "com.luisdornellez.tunochedeesperanza",
+  "appName": "Tu noche de esperanza",
+  "webDir": "www",
+  "android": { "allowMixedContent": true },
+  "server": { "androidScheme": "https" }
+}
