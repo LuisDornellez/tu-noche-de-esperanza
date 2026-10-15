@@ -24,9 +24,9 @@ jobs:
           cp *.java android/app/src/main/java/$PKG/
           sed -i '0,/^dependencies {/s//dependencies {\n    implementation "androidx.media3:media3-exoplayer:1.5.1"\n    implementation "androidx.media3:media3-session:1.5.1"\n    implementation "androidx.media3:media3-datasource-okhttp:1.5.1"\n    implementation "com.squareup.okhttp3:okhttp:4.12.0"/' android/app/build.gradle
           M=android/app/src/main/AndroidManifest.xml
-          sed -i 's#<application#<uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>\n    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>\n    <uses-permission android:name="android.permission.WAKE_LOCK"/>\n    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>\n    <application android:usesCleartextTraffic="true"#' $M
+          sed -i 's#<application#<uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>\n    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>\n    <uses-permission android:name="android.permission.WAKE_LOCK"/>\n    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>\n    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>\n    <application android:usesCleartextTraffic="true"#' $M
           sed -i 's#</application>#<service android:name=".RadioService" android:foregroundServiceType="mediaPlayback" android:exported="true">\n            <intent-filter><action android:name="androidx.media3.session.MediaSessionService"/></intent-filter>\n        </service>\n        <service android:name=".KeepAliveService" android:foregroundServiceType="mediaPlayback" android:exported="false"/>\n    </application>#' $M
-          grep -n "Service\|usesCleartext" $M
+          grep -n "Service\|usesCleartext\|BATTERY" $M
       - name: Compilar
         run: |
           npx cap sync android
