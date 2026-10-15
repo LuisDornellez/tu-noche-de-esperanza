@@ -23,8 +23,8 @@ public class MainActivity extends BridgeActivity {
     }
 
     // El WebView sigue activo aunque la pantalla se apague o la app pase a segundo plano.
-    @Override protected void onPause() { super.onPause(); keepWebViewRunning(); }
-    @Override protected void onStop() { super.onStop(); keepWebViewRunning(); }
+    @Override public void onPause() { super.onPause(); keepWebViewRunning(); }
+    @Override public void onStop() { super.onStop(); keepWebViewRunning(); }
 
     private void keepWebViewRunning() {
         if (getBridge() != null && getBridge().getWebView() != null) {
